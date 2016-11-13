@@ -4,8 +4,8 @@
 
   <todo-list>
     <ul class="filters" slot="navigation">
-      <li repeat.for="row of router.navigation" class="${row.isActive ? 'selected' : ''}">
-        <a href.bind="row.href">${row.title}</a>
+      <li repeat.for="row of router.navigation">
+        <a href.bind="row.href" class="${row.isActive ? 'selected' : ''}">${row.title}</a>
       </li>
     </ul>  
   </todo-list> 
