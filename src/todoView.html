@@ -1,0 +1,16 @@
+<template>
+  <section if.bind="todoItems.all.length" class="main">
+    <input class="toggle-all" type="checkbox" checked.bind="todoItems.allCompleted">
+    <label for="toggle-all">Mark all as complete</label>
+    <ul class="todo-list">
+      <li repeat.for="todo of todoItems.all | state:stateName" class="${todo.completed ? 'completed' : ''} ${todo.editing ? 'editing' : ''}">
+        <div class="view">
+          <input class="toggle" type="checkbox" checked.bind="todo.completed">
+          <label dblclick.delegate="todo.editTitle()">${todo.title}</label>
+          <button class="destroy" click.delegate="todoItems.delete(todo)"></button>
+        </div>
+        <input class="edit" focus.bind="todo.editing" keyup.delegate="keyUp(todo, $event.code)" value.bind="todo.title">        
+      </li>
+    </ul>
+  </section>
+</template>

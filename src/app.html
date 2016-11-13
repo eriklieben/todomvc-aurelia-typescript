@@ -1,0 +1,16 @@
+<template>
+  <require from="./info-footer.html"></require>
+  <require from="./todoList"></require>
+
+  <todo-list>
+    <ul class="filters" slot="navigation">
+      <li repeat.for="row of router.navigation" class="${row.isActive ? 'selected' : ''}">
+        <a href.bind="row.href">${row.title}</a>
+      </li>
+    </ul>  
+  </todo-list> 
+  <info-footer></info-footer>
+
+  <script src="node_modules/todomvc-common/base.js"></script>
+  <script src="js/app.js"></script>
+</template>

@@ -1,0 +1,30 @@
+<template>
+		<section class="todoapp">
+			
+      <header class="header">
+				<h1>todos</h1>
+        <form submit.delegate="addTodoItem()">
+          <input value.bind="newTodoText" class="new-todo" placeholder="What needs to be done?" autofocus>
+        </form>
+			</header>
+      
+      <router-view></router-view>
+			
+      <footer show.bind="todoItems.all.length" class="footer">
+				
+        <span class="todo-count">
+          <strong>${todoItems.active.length}</strong> 
+          ${todoItems.active.length | pluralize:'item':'items'} left
+        </span>
+        
+        <slot name="navigation"></slot>
+				
+        <button 
+          show.bind="todoItems.completed.length" 
+          click.delegate="todoItems.deleteAllCompleted()" 
+          class="clear-completed">Clear completed</button>
+          
+			</footer>
+
+		</section>
+</template>
