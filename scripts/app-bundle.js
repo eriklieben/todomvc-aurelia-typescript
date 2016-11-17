@@ -1,53 +1,3 @@
-define('app',["require", "exports"], function (require, exports) {
-    "use strict";
-    var App = (function () {
-        function App() {
-        }
-        App.prototype.configureRouter = function (config, router) {
-            config.title = 'Aurelia - TodoMVC';
-            config.map([
-                { route: ['', 'all'], name: 'all', moduleId: 'todoView', nav: true, title: 'All' },
-                { route: 'active', name: 'active', moduleId: 'todoView', nav: true, title: 'Active' },
-                { route: 'completed', name: 'completed', moduleId: 'todoView', nav: true, title: 'Completed' }
-            ]);
-            this.router = router;
-        };
-        return App;
-    }());
-    exports.App = App;
-});
-
-define('environment',["require", "exports"], function (require, exports) {
-    "use strict";
-    Object.defineProperty(exports, "__esModule", { value: true });
-    exports.default = {
-        debug: true,
-        testing: true
-    };
-});
-
-define('main',["require", "exports", './environment'], function (require, exports, environment_1) {
-    "use strict";
-    Promise.config({
-        warnings: {
-            wForgottenReturn: false
-        }
-    });
-    function configure(aurelia) {
-        aurelia.use
-            .standardConfiguration()
-            .feature('resources');
-        if (environment_1.default.debug) {
-            aurelia.use.developmentLogging();
-        }
-        if (environment_1.default.testing) {
-            aurelia.use.plugin('aurelia-testing');
-        }
-        aurelia.start().then(function () { return aurelia.setRoot(); });
-    }
-    exports.configure = configure;
-});
-
 define('models/events/baseEvent',["require", "exports"], function (require, exports) {
     "use strict";
     var BaseEvent = (function () {
@@ -397,27 +347,67 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('todoList',["require", "exports", 'aurelia-framework', './models/TodoItems'], function (require, exports, aurelia_framework_1, TodoItems_1) {
+define('app',["require", "exports", 'aurelia-framework', './models/TodoItems'], function (require, exports, aurelia_framework_1, TodoItems_1) {
     "use strict";
-    var TodoList = (function () {
-        function TodoList(todoItems) {
+    var App = (function () {
+        function App(todoItems) {
             this.todoItems = todoItems;
             this.newTodoText = '';
         }
-        TodoList.prototype.addTodoItem = function () {
+        App.prototype.addTodoItem = function () {
             this.todoItems.add(this.newTodoText);
             this.newTodoText = '';
         };
-        TodoList = __decorate([
+        App.prototype.configureRouter = function (config, router) {
+            config.title = 'Aurelia - TodoMVC';
+            config.map([
+                { route: ['', 'all'], name: 'all', moduleId: 'todos', nav: true, title: 'All' },
+                { route: 'active', name: 'active', moduleId: 'todos', nav: true, title: 'Active' },
+                { route: 'completed', name: 'completed', moduleId: 'todos', nav: true, title: 'Completed' }
+            ]);
+            this.router = router;
+        };
+        App = __decorate([
             aurelia_framework_1.inject(TodoItems_1.default), 
             __metadata('design:paramtypes', [TodoItems_1.default])
-        ], TodoList);
-        return TodoList;
+        ], App);
+        return App;
     }());
-    exports.TodoList = TodoList;
+    exports.App = App;
 });
 
-define('todoView',["require", "exports", 'aurelia-router'], function (require, exports, aurelia_router_1) {
+define('environment',["require", "exports"], function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    exports.default = {
+        debug: true,
+        testing: true
+    };
+});
+
+define('main',["require", "exports", './environment'], function (require, exports, environment_1) {
+    "use strict";
+    Promise.config({
+        warnings: {
+            wForgottenReturn: false
+        }
+    });
+    function configure(aurelia) {
+        aurelia.use
+            .standardConfiguration()
+            .feature('resources');
+        if (environment_1.default.debug) {
+            aurelia.use.developmentLogging();
+        }
+        if (environment_1.default.testing) {
+            aurelia.use.plugin('aurelia-testing');
+        }
+        aurelia.start().then(function () { return aurelia.setRoot(); });
+    }
+    exports.configure = configure;
+});
+
+define('todos',["require", "exports", 'aurelia-router'], function (require, exports, aurelia_router_1) {
     "use strict";
     var TodoView = (function () {
         function TodoView() {
@@ -487,8 +477,7 @@ define('resources/value-converters/statevalueconverter',["require", "exports"], 
     exports.StateValueConverter = StateValueConverter;
 });
 
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"./info-footer.html\"></require>\n  <require from=\"./todoList\"></require>\n\n  <todo-list>\n    <ul class=\"filters\" slot=\"navigation\">\n      <li repeat.for=\"row of router.navigation\" class=\"${row.isActive ? 'selected' : ''}\">\n        <a href.bind=\"row.href\">${row.title}</a>\n      </li>\n    </ul>  \n  </todo-list> \n  <info-footer></info-footer>\n\n  <script src=\"node_modules/todomvc-common/base.js\"></script>\n  <script src=\"js/app.js\"></script>\n</template>\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"./info-footer.html\"></require>\n\n\t\t<section class=\"todoapp\">\n\t\t\t\n      <header class=\"header\">\n\t\t\t\t<h1>todos</h1>\n        <form submit.delegate=\"addTodoItem()\">\n          <input value.bind=\"newTodoText\" class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus>\n        </form>\n\t\t\t</header>\n      \n      <router-view></router-view>\n\t\t\t\n      <footer show.bind=\"todoItems.all.length\" class=\"footer\">\n\t\t\t\t\n        <span class=\"todo-count\">\n          <strong>${todoItems.active.length}</strong> \n          ${todoItems.active.length | pluralize:'item':'items'} left\n        </span>\n        \n        <ul class=\"filters\">\n          <li repeat.for=\"row of router.navigation\">\n            <a href.bind=\"row.href\" class=\"${row.isActive ? 'selected' : ''}\">${row.title}</a>\n          </li>\n        </ul>\n\t\t\t\t\n        <button \n          show.bind=\"todoItems.completed.length\" \n          click.delegate=\"todoItems.deleteAllCompleted()\" \n          class=\"clear-completed\">Clear completed</button>\n          \n\t\t\t</footer>\n\n\t\t</section>\n\n  <info-footer></info-footer>\n\n  <script src=\"node_modules/todomvc-common/base.js\"></script>\n  <script src=\"js/app.js\"></script>\n</template>\n"; });
 define('text!info-footer.html', ['module'], function(module) { module.exports = "<template>\n  <footer class=\"info\">\n    <p>Double-click to edit a todo</p>\n    <p>Template by <a href=\"http://sindresorhus.com\">Sindre Sorhus</a></p>\n    <p>Created by <a href=\"https://github.com/eriklieben\">Erik Lieben</a></p>\n    <p>Part of <a href=\"http://todomvc.com\">TodoMVC</a></p>\n  </footer>\n</template>\n"; });
-define('text!todoList.html', ['module'], function(module) { module.exports = "<template>\n\t\t<section class=\"todoapp\">\n\t\t\t\n      <header class=\"header\">\n\t\t\t\t<h1>todos</h1>\n        <form submit.delegate=\"addTodoItem()\">\n          <input value.bind=\"newTodoText\" class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus>\n        </form>\n\t\t\t</header>\n      \n      <router-view></router-view>\n\t\t\t\n      <footer show.bind=\"todoItems.all.length\" class=\"footer\">\n\t\t\t\t\n        <span class=\"todo-count\">\n          <strong>${todoItems.active.length}</strong> \n          ${todoItems.active.length | pluralize:'item':'items'} left\n        </span>\n        \n        <slot name=\"navigation\"></slot>\n\t\t\t\t\n        <button \n          show.bind=\"todoItems.completed.length\" \n          click.delegate=\"todoItems.deleteAllCompleted()\" \n          class=\"clear-completed\">Clear completed</button>\n          \n\t\t\t</footer>\n\n\t\t</section>\n</template>\n"; });
-define('text!todoView.html', ['module'], function(module) { module.exports = "<template>\n  <section if.bind=\"todoItems.all.length\" class=\"main\">\n    <input class=\"toggle-all\" type=\"checkbox\" checked.bind=\"todoItems.allCompleted\">\n    <label for=\"toggle-all\">Mark all as complete</label>\n    <ul class=\"todo-list\">\n      <li repeat.for=\"todo of todoItems.all | state:stateName\" class=\"${todo.completed ? 'completed' : ''} ${todo.editing ? 'editing' : ''}\">\n        <div class=\"view\">\n          <input class=\"toggle\" type=\"checkbox\" checked.bind=\"todo.completed\">\n          <label dblclick.delegate=\"todo.editTitle()\">${todo.title}</label>\n          <button class=\"destroy\" click.delegate=\"todoItems.delete(todo)\"></button>\n        </div>\n        <input class=\"edit\" focus.bind=\"todo.editing\" keyup.delegate=\"keyUp(todo, $event.code)\" value.bind=\"todo.title\">        \n      </li>\n    </ul>\n  </section>\n</template>\n"; });
+define('text!todos.html', ['module'], function(module) { module.exports = "<template>\n  <section if.bind=\"todoItems.all.length\" class=\"main\">\n    <input class=\"toggle-all\" type=\"checkbox\" checked.bind=\"todoItems.allCompleted\">\n    <label for=\"toggle-all\">Mark all as complete</label>\n    <ul class=\"todo-list\">\n      <li repeat.for=\"todo of todoItems.all | state:stateName\" class=\"${todo.completed ? 'completed' : ''} ${todo.editing ? 'editing' : ''}\">\n        <div class=\"view\">\n          <input class=\"toggle\" type=\"checkbox\" checked.bind=\"todo.completed\">\n          <label dblclick.delegate=\"todo.editTitle()\">${todo.title}</label>\n          <button class=\"destroy\" click.delegate=\"todoItems.delete(todo)\"></button>\n        </div>\n        <input class=\"edit\" focus.bind=\"todo.editing\" keyup.delegate=\"keyUp(todo, $event.code)\" value.bind=\"todo.title\">        \n      </li>\n    </ul>\n  </section>\n</template>\n"; });
 //# sourceMappingURL=app-bundle.js.map
