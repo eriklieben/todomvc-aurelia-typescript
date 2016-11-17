@@ -130,7 +130,12 @@
             "path": "../node_modules/aurelia-testing/dist/amd",
             "main": "aurelia-testing",
             "env": "dev"
-          }
+          },
+          {
+            "name": "moment",
+            "path": "../node_modules/moment",
+            "main": "moment"
+          }          
         ]
       }
     ]

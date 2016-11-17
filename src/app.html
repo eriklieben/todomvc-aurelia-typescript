@@ -1,41 +1,38 @@
 <template>
   <require from="./info-footer.html"></require>
-
-		<section class="todoapp">
-			
-      <header class="header">
-				<h1>todos</h1>
-        <form submit.delegate="addTodoItem()">
-          <input value.bind="newTodoText" class="new-todo" placeholder="What needs to be done?" autofocus>
-        </form>
-			</header>
+  <require from="./resources/style/last-modified.css"></require>
+  
+  <section class="todoapp">		
+    <header class="header">
+      <h1>todos</h1>
+      <form submit.delegate="addTodoItem()">
+        <input value.bind="newTodoText" class="new-todo" placeholder="What needs to be done?" autofocus>
+      </form>
+    </header>    
+    <router-view></router-view>			
+    <footer show.bind="todoItems.all.length" class="footer">			
+      <span class="todo-count">
+      <strong>${todoItems.active.length}</strong> 
+      ${todoItems.active.length | pluralize:'item':'items'} left
+      </span>    
       
-      <router-view></router-view>
-			
-      <footer show.bind="todoItems.all.length" class="footer">
-				
-        <span class="todo-count">
-          <strong>${todoItems.active.length}</strong> 
-          ${todoItems.active.length | pluralize:'item':'items'} left
-        </span>
-        
-        <ul class="filters">
-          <li repeat.for="row of router.navigation">
-            <a href.bind="row.href" class="${row.isActive ? 'selected' : ''}">${row.title}</a>
-          </li>
-        </ul>
-				
-        <button 
-          show.bind="todoItems.completed.length" 
-          click.delegate="todoItems.deleteAllCompleted()" 
-          class="clear-completed">Clear completed</button>
-          
-			</footer>
+      <ul class="filters">
+        <li repeat.for="row of router.navigation">
+          <a href.bind="row.href" class="${row.isActive ? 'selected' : ''}">${row.title}</a>
+        </li>
+      </ul>	
+      
+      <button 
+        show.bind="todoItems.completed.length" 
+        click.delegate="todoItems.deleteAllCompleted()" 
+        class="clear-completed">Clear completed</button> 
 
-		</section>
-
+    </footer>
+  </section> 
+  <section>
+    <last-modified></last-modified>
+  </section>
   <info-footer></info-footer>
-
   <script src="node_modules/todomvc-common/base.js"></script>
   <script src="js/app.js"></script>
 </template>

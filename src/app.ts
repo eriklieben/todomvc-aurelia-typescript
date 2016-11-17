@@ -10,7 +10,6 @@ export class App {
   public newTodoText = '';
    
   constructor(public todoItems: TodoItems) {
-        
   }
 
   public addTodoItem() {
