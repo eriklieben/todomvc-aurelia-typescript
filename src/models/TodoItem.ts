@@ -1,8 +1,7 @@
 import { EventAggregator } from 'aurelia-event-aggregator';
 import { inject } from 'aurelia-framework';
-import CompletedChangedEvent from './events/todoItemCompletedChangedEvent';
-import TitleChangedEvent from './events/todoItemTitleChangedEvent';
-import CreatedEvent from './events/createTodoItemEvent';
+import { CreatedEvent, CompletedChangedEvent, TitleChangedEvent } from './../models/events/index';
+
 
 @inject(EventAggregator)
 export default class TodoItem {

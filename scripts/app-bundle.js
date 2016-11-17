@@ -77,7 +77,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-define('models/TodoItem',["require", "exports", 'aurelia-event-aggregator', 'aurelia-framework', './events/todoItemCompletedChangedEvent', './events/todoItemTitleChangedEvent', './events/createTodoItemEvent'], function (require, exports, aurelia_event_aggregator_1, aurelia_framework_1, todoItemCompletedChangedEvent_1, todoItemTitleChangedEvent_1, createTodoItemEvent_1) {
+define('models/TodoItem',["require", "exports", 'aurelia-event-aggregator', 'aurelia-framework', './../models/events/index'], function (require, exports, aurelia_event_aggregator_1, aurelia_framework_1, index_1) {
     "use strict";
     var TodoItem = (function () {
         function TodoItem(ea, title, completed, id) {
@@ -90,7 +90,7 @@ define('models/TodoItem',["require", "exports", 'aurelia-event-aggregator', 'aur
             this.innerCompleted = completed;
             if (!id) {
                 this.innerId = uniqueID();
-                this.ea.publish('todo.created', new createTodoItemEvent_1.default(this.id, this.title));
+                this.ea.publish('todo.created', new index_1.CreatedEvent(this.id, this.title));
             }
             else {
                 this.innerId = id;
@@ -112,7 +112,7 @@ define('models/TodoItem',["require", "exports", 'aurelia-event-aggregator', 'aur
                     return;
                 }
                 this.innerCompleted = value;
-                this.ea.publish('todo.completed', new todoItemCompletedChangedEvent_1.default(this.innerId, this.innerCompleted));
+                this.ea.publish('todo.completed', new index_1.CompletedChangedEvent(this.innerId, this.innerCompleted));
             },
             enumerable: true,
             configurable: true
@@ -126,7 +126,7 @@ define('models/TodoItem',["require", "exports", 'aurelia-event-aggregator', 'aur
         TodoItem.prototype.commitTitleChange = function () {
             this.oldTitle = '';
             this.editing = false;
-            this.ea.publish('todo.title', new todoItemTitleChangedEvent_1.default(this.id, this.title));
+            this.ea.publish('todo.title', new index_1.TitleChangedEvent(this.id, this.title));
         };
         TodoItem.prototype.rollbackTitleChange = function () {
             this.title = this.oldTitle;
@@ -183,6 +183,14 @@ define('models/events/deleteTodoItemEvent',["require", "exports", './baseEvent']
     }(baseEvent_1.default));
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = DeleteTodoItemEvent;
+});
+
+define('models/events/index',["require", "exports", './todoItemTitleChangedEvent', './deleteTodoItemEvent', './todoItemCompletedChangedEvent', './todoItemTitleChangedEvent'], function (require, exports, todoItemTitleChangedEvent_1, deleteTodoItemEvent_1, todoItemCompletedChangedEvent_1, todoItemTitleChangedEvent_2) {
+    "use strict";
+    exports.CreatedEvent = todoItemTitleChangedEvent_1.default;
+    exports.TodoItemDeletedEvent = deleteTodoItemEvent_1.default;
+    exports.CompletedChangedEvent = todoItemCompletedChangedEvent_1.default;
+    exports.TitleChangedEvent = todoItemTitleChangedEvent_2.default;
 });
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -336,6 +344,13 @@ define('models/TodoItems',["require", "exports", 'aurelia-framework', 'aurelia-e
     }());
     Object.defineProperty(exports, "__esModule", { value: true });
     exports.default = TodoItems;
+});
+
+define('models/index',["require", "exports", './TodoItem', './TodoItems', './StoredTodoItem'], function (require, exports, TodoItem_1, TodoItems_1, StoredTodoItem_1) {
+    "use strict";
+    exports.TodoItem = TodoItem_1.default;
+    exports.TodoItems = TodoItems_1.default;
+    exports.StoredTodoItem = StoredTodoItem_1.default;
 });
 
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
@@ -2873,9 +2888,9 @@ define('aurelia-templating-resources/dynamic-element',['exports', 'aurelia-templ
     return DynamicElement;
   }
 });
-define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"./info-footer.html\"></require>\n  <require from=\"./resources/style/last-modified.css\"></require>\n  \n  <section class=\"todoapp\">\t\t\n    <header class=\"header\">\n      <h1>todos</h1>\n      <form submit.delegate=\"addTodoItem()\">\n        <input value.bind=\"newTodoText\" class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus>\n      </form>\n    </header>    \n    <router-view></router-view>\t\t\t\n    <footer show.bind=\"todoItems.all.length\" class=\"footer\">\t\t\t\n      <span class=\"todo-count\">\n      <strong>${todoItems.active.length}</strong> \n      ${todoItems.active.length | pluralize:'item':'items'} left\n      </span>    \n      \n      <ul class=\"filters\">\n        <li repeat.for=\"row of router.navigation\">\n          <a href.bind=\"row.href\" class=\"${row.isActive ? 'selected' : ''}\">${row.title}</a>\n        </li>\n      </ul>\t\n      \n      <button \n        show.bind=\"todoItems.completed.length\" \n        click.delegate=\"todoItems.deleteAllCompleted()\" \n        class=\"clear-completed\">Clear completed</button> \n\n    </footer>\n  </section> \n  <section>\n    <last-modified></last-modified>\n  </section>\n  <info-footer></info-footer>\n  <script src=\"node_modules/todomvc-common/base.js\"></script>\n  <script src=\"js/app.js\"></script>\n</template>\n"; });
-define('text!resources/style/last-modified.css', ['module'], function(module) { module.exports = "last-modified {\n  font-size: .7rem;\n  color: #bfbfbf;\n}\n"; });
+define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"./info-footer.html\"></require>\n  \n  <section class=\"todoapp\">\t\t\n    <header class=\"header\">\n      <h1>todos</h1>\n      <form submit.delegate=\"addTodoItem()\">\n        <input value.bind=\"newTodoText\" class=\"new-todo\" placeholder=\"What needs to be done?\" autofocus>\n      </form>\n    </header>    \n    <router-view></router-view>\t\t\t\n    <footer show.bind=\"todoItems.all.length\" class=\"footer\">\t\t\t\n      <span class=\"todo-count\">\n      <strong>${todoItems.active.length}</strong> \n      ${todoItems.active.length | pluralize:'item':'items'} left\n      </span>    \n      \n      <ul class=\"filters\">\n        <li repeat.for=\"row of router.navigation\">\n          <a href.bind=\"row.href\" class=\"${row.isActive ? 'selected' : ''}\">${row.title}</a>\n        </li>\n      </ul>\t\n      \n      <button \n        show.bind=\"todoItems.completed.length\" \n        click.delegate=\"todoItems.deleteAllCompleted()\" \n        class=\"clear-completed\">Clear completed</button> \n\n    </footer>\n  </section> \n  <section>\n    <last-modified></last-modified>\n  </section>\n  <info-footer></info-footer>\n  <script src=\"node_modules/todomvc-common/base.js\"></script>\n  <script src=\"js/app.js\"></script>\n</template>\n"; });
 define('text!info-footer.html', ['module'], function(module) { module.exports = "<template>\n  <footer class=\"info\">\n    <p>Double-click to edit a todo</p>\n    <p>Template by <a href=\"http://sindresorhus.com\">Sindre Sorhus</a></p>\n    <p>Created by <a href=\"https://github.com/eriklieben\">Erik Lieben</a></p>\n    <p>Part of <a href=\"http://todomvc.com\">TodoMVC</a></p>\n  </footer>\n</template>\n"; });
-define('text!todos.html', ['module'], function(module) { module.exports = "<template>\n  <section if.bind=\"todoItems.all.length\" class=\"main\">\n    <input class=\"toggle-all\" type=\"checkbox\" checked.bind=\"todoItems.allCompleted\">\n    <label for=\"toggle-all\">Mark all as complete</label>\n    <ul class=\"todo-list\">\n      <li repeat.for=\"todo of todoItems.all | state:stateName\" class=\"${todo.completed ? 'completed' : ''} ${todo.editing ? 'editing' : ''}\">\n        <div class=\"view\">\n          <input class=\"toggle\" type=\"checkbox\" checked.bind=\"todo.completed\">\n          <label dblclick.delegate=\"todo.editTitle()\">${todo.title}</label>\n          <button class=\"destroy\" click.delegate=\"todoItems.delete(todo)\"></button>\n        </div>\n        <input class=\"edit\" focus.bind=\"todo.editing\" keyup.delegate=\"keyUp(todo, $event.code)\" value.bind=\"todo.title\">        \n      </li>\n    </ul>\n  </section>\n</template>\n"; });
-define('text!resources/elements/lastModified.html', ['module'], function(module) { module.exports = "<template>\n  Last modification was ${changeLog.lastModified | timeAgo & signal:'refreshTimeAgo' }\n</template>\n"; });
+define('text!resources/style/last-modified.css', ['module'], function(module) { module.exports = "last-modified {\n  font-size: .7rem;\n  color: #bfbfbf;\n}\n"; });
+define('text!todos.html', ['module'], function(module) { module.exports = "<template>\r\n  <section if.bind=\"todoItems.all.length\" class=\"main\">\r\n    <input class=\"toggle-all\" type=\"checkbox\" checked.bind=\"todoItems.allCompleted\">\r\n    <label for=\"toggle-all\">Mark all as complete</label>\r\n    <ul class=\"todo-list\">\r\n      <li repeat.for=\"todo of todoItems.all | state:stateName\" class=\"${todo.completed ? 'completed' : ''} ${todo.editing ? 'editing' : ''}\">\r\n        <div class=\"view\">\r\n          <input class=\"toggle\" type=\"checkbox\" checked.bind=\"todo.completed\">\r\n          <label dblclick.delegate=\"todo.editTitle()\">${todo.title}</label>\r\n          <button class=\"destroy\" click.delegate=\"todoItems.delete(todo)\"></button>\r\n        </div>\r\n        <input class=\"edit\" focus.bind=\"todo.editing\" keyup.delegate=\"keyUp(todo, $event.code)\" value.bind=\"todo.title\">        \r\n      </li>\r\n    </ul>\r\n  </section>\r\n</template>\r\n"; });
+define('text!resources/elements/lastModified.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"./../style/last-modified.css\"></require>\n  Last modification was ${changeLog.lastModified | timeAgo & signal:'refreshTimeAgo' }\n</template>\n"; });
 //# sourceMappingURL=app-bundle.js.map

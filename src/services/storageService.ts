@@ -3,11 +3,7 @@ import { EventAggregator } from 'aurelia-event-aggregator';
 
 import TodoItem from './../models/TodoItem';
 import StoredTodoItem from './../models/StoredTodoItem';
-
-import createEvent from './../models/events/todoItemTitleChangedEvent';
-import todoItemDeletedEvent from './../models/events/deleteTodoItemEvent';
-import completedChangedEvent from './../models/events/todoItemCompletedChangedEvent';
-import titleChangedEvent from './../models/events/todoItemTitleChangedEvent';
+import { CreatedEvent, TodoItemDeletedEvent, CompletedChangedEvent, TitleChangedEvent } from './../models/events/index';
 
 @inject(EventAggregator, Factory.of(TodoItem))
 export default class StorageService {
@@ -24,7 +20,7 @@ export default class StorageService {
     ea.subscribe('todo.title', this.handleTitleChangedEvent.bind(this));
   }
 
-  private handleCreateEvent(event: createEvent) {
+  private handleCreateEvent(event: CreatedEvent) {
     let todos = this.getStoredTodos();
     if (!todos) {
       return;
@@ -37,7 +33,7 @@ export default class StorageService {
     setObject('todoItems', todos);
   }
 
-  private handleDeleteEvent(event: todoItemDeletedEvent) {
+  private handleDeleteEvent(event: TodoItemDeletedEvent) {
     let todos = this.getStoredTodos();
     if (!todos) {
       return;
@@ -48,7 +44,7 @@ export default class StorageService {
     setObject('todoItems', todos);
   }
 
-  private handleCompletedEvent(event: completedChangedEvent) {
+  private handleCompletedEvent(event: CompletedChangedEvent) {
     let todos = this.getStoredTodos();
     if (!todos) {
       return;
@@ -59,7 +55,7 @@ export default class StorageService {
     setObject('todoItems', todos);
   }
 
-  private handleTitleChangedEvent(event: titleChangedEvent) {
+  private handleTitleChangedEvent(event: TitleChangedEvent) {
     let todos = this.getStoredTodos();
     if (!todos) {
       return;

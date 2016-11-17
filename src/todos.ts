@@ -1,7 +1,10 @@
+import { bindable, bindingMode } from 'aurelia-framework';
 import { activationStrategy } from 'aurelia-router';
+
 import TodoItem from './models/TodoItem';
 
 export class TodoView {
+  
   public stateName = 'all';
 
   public determineActivationStrategy(){
