@@ -414,7 +414,7 @@ define('todos',["require", "exports", 'aurelia-router'], function (require, expo
             this.stateName = 'all';
         }
         TodoView.prototype.determineActivationStrategy = function () {
-            return aurelia_router_1.activationStrategy.replace;
+            return aurelia_router_1.activationStrategy.invokeLifecycle;
         };
         TodoView.prototype.activate = function (params, navigationInstruction) {
             this.stateName = navigationInstruction.name;

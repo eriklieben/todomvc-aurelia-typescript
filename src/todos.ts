@@ -5,7 +5,7 @@ export class TodoView {
   public stateName = 'all';
 
   public determineActivationStrategy(){
-    return activationStrategy.replace;
+    return activationStrategy.invokeLifecycle;
   }
 
   public activate(params, navigationInstruction) {
